@@ -1,2 +1,4 @@
 ConsoleChess/bin/
 ConsoleChess/obj/
+*.suo
+*.user
