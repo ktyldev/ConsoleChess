@@ -10,7 +10,12 @@ namespace ConsoleChess {
             Console.ForegroundColor = ConsoleColor.White;
 
             Board board = new Board();
-            board.PlacePieces();
+            board.SetUpPieces();
+            board.Draw();
+
+            var piece = board.PickPiece("b2");
+            board.HighlightMovePatterns(piece);
+
             board.Draw();
 
             Console.ReadKey();

@@ -18,30 +18,22 @@ namespace ConsoleChess {
             }
         }
 
-        public void PlacePieces() {
-            // Place pawns
-            foreach (var square in GetSquares("*7")) {
-                var pawn = new Pawn(Colour.Black);
-                square.PlacePiece(pawn);
-            }
-            foreach (var square in GetSquares("*2")) {
-                var pawn = new Pawn(Colour.White);
-                square.PlacePiece(pawn);
-            }
-            // Place rooks
-            foreach (var square in GetSquares("a8", "h8")) {
-                var rook = new Rook(Colour.Black);
-                square.PlacePiece(rook);
-            }
-            foreach (var square in GetSquares("a1", "h1")) {
-                var rook = new Rook(Colour.White);
-                square.PlacePiece(rook);
-            }
-            // Place knights
-            // Place bishops
-            // Place queens
-            // Place kings
+        public void SetUpPieces() {
+            PlacePieces(Piece.GetOfficerRow(), GetSquares("*1"), Colour.White);
+            PlacePieces(Piece.GetPawnRow(), GetSquares("*2"), Colour.White);
+            PlacePieces(Piece.GetPawnRow(), GetSquares("*7"), Colour.Black);
+            PlacePieces(Piece.GetOfficerRow(), GetSquares("*8"), Colour.Black);
+        }
 
+        public void PlacePieces(List<Piece> pieces, List<Square> squares, Colour colour) {
+            if (pieces.Count != squares.Count)
+                return;
+
+            for (int i = 0; i < pieces.Count; i++) {
+                pieces[i].Colour = colour;
+                pieces[i].Position = squares[i].Position;
+                squares[i].PlacePiece(pieces[i]);
+            }
         }
 
         private Square GetSquare(string algebraicCoordinate) {
@@ -56,11 +48,26 @@ namespace ConsoleChess {
             return squares.Where(s => s.Position.Column == col && s.Position.Row == row).Single();
         }
 
+        private List<Square> GetSquares(List<Position> positions) {
+            var squares = new List<Square>();
+
+            foreach (var position in positions) {
+                squares.Add(this.squares.Where(s => s.Position.X == position.X && s.Position.Y == position.Y).Single());
+            }
+
+            return squares;
+        }
+
+        public Piece PickPiece(string algebraic) {
+            var square = GetSquare(algebraic);
+            return square.Piece;
+        }
+
         private List<Square> GetSquares(params string[] algebraicCoordinates) {
             if (algebraicCoordinates.Any(c => c.Length != 2))
                 return null;
 
-            if (algebraicCoordinates.Length > 1) {
+            if (algebraicCoordinates.Length == 1) {
                 var wildChar = "*";
                 var coord = algebraicCoordinates.Single();
                 var coordArray = coord.ToCharArray();
@@ -116,8 +123,13 @@ namespace ConsoleChess {
                 DrawPiece(square.Piece);
                 return;
             }
+            if (square.Highlight != ConsoleColor.Black) {
+                Console.BackgroundColor = square.Highlight;
+            }
 
             Console.Write(square.Colour);
+
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
         private void DrawPiece(Piece piece) {
@@ -130,6 +142,22 @@ namespace ConsoleChess {
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public void HighlightMovePatterns(Piece piece) {
+            var availableMoves = piece.GetMovePatterns();
+            var piecePosition = piece.Position;
+
+            var positions = new List<Position>();
+            foreach (var move in availableMoves) {
+                positions.Add(Position.FromCoord(piecePosition.Coordinate + move));
+            }
+
+            var squares = GetSquares(positions);
+            foreach (var square in squares) {
+                square.Highlight = ConsoleColor.Green;
+            }
+
         }
     }
 }
