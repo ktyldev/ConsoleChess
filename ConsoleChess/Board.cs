@@ -157,7 +157,12 @@ namespace ConsoleChess {
             foreach (var square in squares) {
                 square.Highlight = ConsoleColor.Green;
             }
+        }
 
+        public void DehightlightSqaures() {
+            foreach (var square in squares) {
+                square.Highlight = ConsoleColor.Black;
+            }
         }
     }
 }

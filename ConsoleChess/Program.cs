@@ -13,12 +13,18 @@ namespace ConsoleChess {
             board.SetUpPieces();
             board.Draw();
 
-            var piece = board.PickPiece("b2");
-            board.HighlightMovePatterns(piece);
+            while (true) {
+                board.DehightlightSqaures();
+                Console.Write("Pick a piece's algebraic coordinate: ");
+                var playerInput = Console.ReadLine();
 
-            board.Draw();
+                var piece = board.PickPiece(playerInput);
+                board.HighlightMovePatterns(piece);
 
-            Console.ReadKey();
+                Console.Clear();
+                board.Draw();
+
+            }
         }
     }
 }
