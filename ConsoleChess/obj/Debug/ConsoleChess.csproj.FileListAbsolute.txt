@@ -1,0 +1,6 @@
+c:\users\cathal\documents\visual studio 2015\Projects\ConsoleChess\ConsoleChess\bin\Debug\ConsoleChess.exe.config
+c:\users\cathal\documents\visual studio 2015\Projects\ConsoleChess\ConsoleChess\bin\Debug\ConsoleChess.exe
+c:\users\cathal\documents\visual studio 2015\Projects\ConsoleChess\ConsoleChess\bin\Debug\ConsoleChess.pdb
+c:\users\cathal\documents\visual studio 2015\Projects\ConsoleChess\ConsoleChess\obj\Debug\ConsoleChess.csprojResolveAssemblyReference.cache
+c:\users\cathal\documents\visual studio 2015\Projects\ConsoleChess\ConsoleChess\obj\Debug\ConsoleChess.exe
+c:\users\cathal\documents\visual studio 2015\Projects\ConsoleChess\ConsoleChess\obj\Debug\ConsoleChess.pdb
