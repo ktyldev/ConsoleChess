@@ -2,24 +2,26 @@
 
 namespace ConsoleChess {
     public class Square {
-        private string[] letters = new[] { "a", "b", "c", "d", "e", "f", "g", "h" };
-        private int[] numbers = new[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        const string WhiteSquare = "#";
+        const string BlackSquare = " ";
 
-        public string AlbebraicPosition { get {
-                var letter = _backwardsLetters[Y];
-                var number = numbers[X];
-
-                return letter + number;
-            } }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public string Colour { get { return (X + Y) % 2 == 0 ? "white" : "black"; } }
-
-        private string[] _backwardsLetters => letters.Reverse().ToArray();
+        public Position Position { get; private set; }
+        public string Colour { get { return (Position.X + Position.Y) % 2 == 0 ? WhiteSquare : BlackSquare; } }
+        public Piece Piece { get; set; }
+        public bool IsOccupied { get { return Piece != null; } }
 
         public Square(int x, int y) {
-            X = x;
-            Y = y;
+            Position = Position.FromCoord(x, y);
+        }
+
+        public void PlacePiece(Piece piece) {
+            Piece = piece;
+        }
+
+        public Piece PickUpPiece() {
+            var temp = Piece;
+            Piece = null;
+            return temp;
         }
     }
 }

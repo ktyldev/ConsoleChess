@@ -4,8 +4,8 @@ using System.Linq;
 
 namespace ConsoleChess {
     public class Board {
-        const string WhiteSquare = "#";
-        const string BlackSquare = " ";
+
+
         const int SideLength = 8;
 
         List<Square> squares = new List<Square>();
@@ -18,28 +18,118 @@ namespace ConsoleChess {
             }
         }
 
+        public void PlacePieces() {
+            // Place pawns
+            foreach (var square in GetSquares("*7")) {
+                var pawn = new Pawn(Colour.Black);
+                square.PlacePiece(pawn);
+            }
+            foreach (var square in GetSquares("*2")) {
+                var pawn = new Pawn(Colour.White);
+                square.PlacePiece(pawn);
+            }
+            // Place rooks
+            foreach (var square in GetSquares("a8", "h8")) {
+                var rook = new Rook(Colour.Black);
+                square.PlacePiece(rook);
+            }
+            foreach (var square in GetSquares("a1", "h1")) {
+                var rook = new Rook(Colour.White);
+                square.PlacePiece(rook);
+            }
+            // Place knights
+            // Place bishops
+            // Place queens
+            // Place kings
+
+        }
+
+        private Square GetSquare(string algebraicCoordinate) {
+            if (algebraicCoordinate.Length != 2)
+                return null;
+
+            var coordArray = algebraicCoordinate.ToCharArray();
+
+            var col = coordArray[0].ToString();
+            var row = coordArray[1].ToString();
+
+            return squares.Where(s => s.Position.Column == col && s.Position.Row == row).Single();
+        }
+
+        private List<Square> GetSquares(params string[] algebraicCoordinates) {
+            if (algebraicCoordinates.Any(c => c.Length != 2))
+                return null;
+
+            if (algebraicCoordinates.Length > 1) {
+                var wildChar = "*";
+                var coord = algebraicCoordinates.Single();
+                var coordArray = coord.ToCharArray();
+
+                var col = coordArray[0].ToString();
+                var row = coordArray[1].ToString();
+
+                if (col == wildChar) {
+                    return GetRow(row);
+                } else if (row == wildChar) {
+                    return GetColumn(col);
+                } else {
+                    return new List<Square> { GetSquare(coord) };
+                }
+            }
+
+            var squares = new List<Square>();
+            foreach (var coord in algebraicCoordinates) {
+                squares.Add(GetSquare(coord));
+            }
+
+            return squares;
+        }
+
+        private List<Square> GetColumn(string column) {
+            return squares.Where(s => s.Position.Column == column).ToList();
+        }
+
+        private List<Square> GetRow(string row) {
+            return squares.Where(s => s.Position.Row == row).ToList();
+        }
+
         public void Draw() {
-            Console.WriteLine("+--------+");
+            Console.WriteLine(" +--------+");
             for (int row = 0; row < SideLength; row++) {
-                Console.Write("|");
+
+                Console.Write((SideLength - row) + "|");
+
                 for (int column = 0; column < SideLength; column++) {
-                    var square = squares.Where(s => s.X == column && s.Y == row).First();
-                    if (square.Colour == "white") {
-                        Console.Write(WhiteSquare);
-                    } else {
-                        Console.Write(BlackSquare);
-                    }
+                    var square = squares.Where(s => s.Position.X == column && s.Position.Y == row).First();
+
+                    DrawSquare(square);
                 }
                 Console.Write("|");
                 Console.WriteLine();
             }
-            Console.WriteLine("+--------+");
+            Console.WriteLine(" +--------+");
+            Console.WriteLine("  abcdefgh ");
         }
 
-        public void PrintSquaresInfo() {
-            foreach (var square in squares) {
-                Console.WriteLine(string.Join(" - ", square.AlbebraicPosition, square.X + " " + square.Y, square.Colour));
+        private void DrawSquare(Square square) {
+            if (square.IsOccupied) {
+                DrawPiece(square.Piece);
+                return;
             }
+
+            Console.Write(square.Colour);
+        }
+
+        private void DrawPiece(Piece piece) {
+            if (piece.Colour == Colour.White) {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+            }
+
+            Console.Write(piece.Character);
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
