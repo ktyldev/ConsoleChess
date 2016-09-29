@@ -1,3 +1,5 @@
+bin
+obj
 ConsoleChess/bin/
 ConsoleChess/obj/
 *.suo
