@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ConsoleChess {
@@ -32,18 +32,29 @@ namespace ConsoleChess {
         public Piece() { }
 
         public abstract List<Vector> GetMovePatterns();
+
+        public void Move(string target) {
+            Position = Position.FromAlgebraic(target);
+        }
     }
 
     public class Pawn : Piece {
+        public bool HasMoved { get; set; }
+
         public override string Character => "p";
         public override int Value => 1;
 
         public override List<Vector> GetMovePatterns() {
+            var availableMoves = new List<Vector>();
+
             var direction = Colour == Colour.White ? -1 : 1;
 
-            var forward = new Vector { X = 0, Y = direction };
+            availableMoves.Add(new Vector { X = 0, Y = direction });
+            if (!HasMoved) {
+                availableMoves.Add(new Vector { X = 0, Y = direction * 2 });
+            }
 
-            return new List<Vector> { forward };
+            return availableMoves;
         }
     }
 
@@ -52,7 +63,14 @@ namespace ConsoleChess {
         public override int Value => 3;
 
         public override List<Vector> GetMovePatterns() {
-            throw new NotImplementedException();
+            var availableTargets = Position.GetDiagonals();
+            var moves = new List<Vector>();
+
+            foreach (var target in availableTargets) {
+                moves.Add(Position.GetMove(target));
+            }
+
+            return moves;
         }
     }
 

@@ -1,10 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsoleChess {
+    public enum Diagonal {
+        Positive,
+        Negative
+    }
+
     public class Position {
         static List<Position> List = new List<Position>();
 
@@ -14,11 +19,12 @@ namespace ConsoleChess {
         public string Row { get; set; }
         public string Column { get; set; }
         public string AlgebraicNotation { get { return Column.ToString() + Row.ToString(); } }
+        public bool IsValid { get { return X >= 0 && X < 8 && Y >= 0 && Y < 8; } }
 
         static Position() {
-            var columns = new[] { "a", "b", "c", "d", "e", "f", "g", "h"};
+            var columns = new[] { "a", "b", "c", "d", "e", "f", "g", "h" };
             var rows = new[] { "8", "7", "6", "5", "4", "3", "2", "1" };
-            
+
             int y = 0;
 
             foreach (var row in rows) {
@@ -60,33 +66,73 @@ namespace ConsoleChess {
             return List.Where(p => p.Column == col && p.Row == row).Single();
         }
 
+        public Vector GetMove(Position to) {
+            return new Vector {
+                X = to.X - X,
+                Y = to.X - X
+            };
+        }
+
         public Position GetNeighbour(Vector direction) {
             var x = direction.X;
             var y = -direction.Y;
-            
+
             return FromCoord(X + x, Y + y);
         }
-    }
 
-    public class Vector {
-        public static readonly Vector Up = new Vector { X = 0, Y = 1 };
-        public static readonly Vector Left = new Vector { X = 1, Y = 0 };
-        public static readonly Vector Down = new Vector { X = 0, Y = -1 };
-        public static readonly Vector Right = new Vector { X = -1, Y = 0 };
-        public static readonly Vector UpLeft = Up + Left;
-        public static readonly Vector DownLeft = Down + Left;
-        public static readonly Vector DownRight = Down + Right;
-        public static readonly Vector UpRight = Up + Right;
+        public List<Position> GetDiagonals() {
+            List<Vector> vectors = new List<Vector>() {
+                Vector.UpLeft,
+                Vector.UpRight,
+                Vector.DownRight,
+                Vector.DownLeft
+            };
 
-        public static Vector operator +(Vector a, Vector b) {
-            return new Vector { X = a.X + b.X, Y = a.Y + b.Y };
+            var positions = new List<Position>();
+            foreach (var vector in vectors) {
+                positions.AddRange(AlongVector(vector));
+            }
+
+            return positions;
         }
 
-        public static List<Vector> FromIntArrays(params int[][] arrays) {
-            return arrays.Select(a => new Vector { X = a[0], Y = a[1] }).ToList();
-        }
+        private List<Position> AlongVector(Vector vector) {
+            var positions = new List<Position>();
 
-        public int X { get; set; }
-        public int Y { get; set; }
+            var current = this;
+            while (true) {
+                var next = current.GetNeighbour(vector);
+                if (!next.IsValid)
+                    break;
+
+                positions.Add(current);
+                next = current;
+            }
+
+            return positions;
+        }
     }
 }
+
+public class Vector {
+    public static readonly Vector Up = new Vector { X = 0, Y = 1 };
+    public static readonly Vector Left = new Vector { X = 1, Y = 0 };
+    public static readonly Vector Down = new Vector { X = 0, Y = -1 };
+    public static readonly Vector Right = new Vector { X = -1, Y = 0 };
+    public static readonly Vector UpLeft = Up + Left;
+    public static readonly Vector DownLeft = Down + Left;
+    public static readonly Vector DownRight = Down + Right;
+    public static readonly Vector UpRight = Up + Right;
+
+    public static Vector operator +(Vector a, Vector b) {
+        return new Vector { X = a.X + b.X, Y = a.Y + b.Y };
+    }
+
+    public static List<Vector> FromIntArrays(params int[][] arrays) {
+        return arrays.Select(a => new Vector { X = a[0], Y = a[1] }).ToList();
+    }
+
+    public int X { get; set; }
+    public int Y { get; set; }
+}
+

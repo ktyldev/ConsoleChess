@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,16 +10,26 @@ namespace ConsoleChess {
             Console.ForegroundColor = ConsoleColor.White;
 
             Board board = new Board();
-            board.SetUpPieces();
+
+            //board.SetUpPieces();
+            var bishop = new Bishop();
+            bishop.Colour = Colour.White;
+
+            board.PlacePiece("e4", bishop);
+
             board.Draw();
 
             while (true) {
-                board.DehightlightSqaures();
-                Console.Write("Pick a piece's algebraic coordinate: ");
-                var playerInput = Console.ReadLine();
+                board.DehighlightSqaures();
+                Console.Write("Pick a piece to move: ");
 
-                var piece = board.PickPiece(playerInput);
+                var piece = board.PickPiece(Console.ReadLine());
                 board.HighlightMovePatterns(piece);
+
+                Console.Write("Move to: ");
+                var destination = Console.ReadLine();
+
+
 
                 Console.Clear();
                 board.Draw();

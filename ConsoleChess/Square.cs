@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace ConsoleChess {
@@ -19,6 +19,7 @@ namespace ConsoleChess {
 
         public void PlacePiece(Piece piece) {
             Piece = piece;
+            piece.Position = Position;
         }
 
         public Piece PickUpPiece() {

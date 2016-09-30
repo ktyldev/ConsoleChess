@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleChess {
     public class Board {
-
-
         const int SideLength = 8;
 
         List<Square> squares = new List<Square>();
@@ -23,6 +21,10 @@ namespace ConsoleChess {
             PlacePieces(Piece.GetPawnRow(), GetSquares("*2"), Colour.White);
             PlacePieces(Piece.GetPawnRow(), GetSquares("*7"), Colour.Black);
             PlacePieces(Piece.GetOfficerRow(), GetSquares("*8"), Colour.Black);
+        }
+
+        public void PlacePiece(string algebraic, Piece piece) {
+            GetSquare(algebraic).PlacePiece(piece);
         }
 
         public void PlacePieces(List<Piece> pieces, List<Square> squares, Colour colour) {
@@ -56,11 +58,6 @@ namespace ConsoleChess {
             }
 
             return squares;
-        }
-
-        public Piece PickPiece(string algebraic) {
-            var square = GetSquare(algebraic);
-            return square.Piece;
         }
 
         private List<Square> GetSquares(params string[] algebraicCoordinates) {
@@ -98,6 +95,11 @@ namespace ConsoleChess {
 
         private List<Square> GetRow(string row) {
             return squares.Where(s => s.Position.Row == row).ToList();
+        }
+
+        public Piece PickPiece(string algebraic) {
+            var square = GetSquare(algebraic);
+            return square.Piece;
         }
 
         public void Draw() {
@@ -159,7 +161,7 @@ namespace ConsoleChess {
             }
         }
 
-        public void DehightlightSqaures() {
+        public void DehighlightSqaures() {
             foreach (var square in squares) {
                 square.Highlight = ConsoleColor.Black;
             }
